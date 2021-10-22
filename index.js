@@ -25,6 +25,7 @@ let rightPressed = false;
 let leftPressed = false;
 
 let score = 0;
+let lives = 3;
 
 const keyDownHandler = (e) => {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
@@ -64,7 +65,6 @@ const collisionDetection = () => {
                     if (score === brickRowCount * brickColumnCount) {
                         alert('YOU WIN, CONGRATULATION!');
                         document.location.reload();
-                        clearInterval(interval);
                     }
                 }
             }
@@ -113,6 +113,12 @@ const drawScore = () => {
     ctx.fillText(`Score: ${score}`, 8, 20);
 };
 
+const drawLives = () => {
+    ctx.font = '16px Arial';
+    ctx.style = '#0095DD';
+    ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+};
+
 const draw = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -120,6 +126,7 @@ const draw = () => {
     drawBall();
     drawPaddle();
     drawScore();
+    drawLives();
 
     collisionDetection();
 
@@ -132,9 +139,17 @@ const draw = () => {
         if (x > paddleX && x < paddleX + paddleWidth) {
             dy = -dy;
         } else {
-            alert('GAME OVER');
-            document.location.reload();
-            clearInterval(interval);
+            lives--;
+            if (!lives) {
+                alert('GAME OVER');
+                document.location.reload();
+            } else {
+                x = canvas.width / 2;
+                y = canvas.height - 30;
+                dx = 2;
+                dy = -2;
+                paddleX = (canvas.width- paddleWidth) / 2;
+            }
         }
     }
 
@@ -153,6 +168,8 @@ const draw = () => {
             paddleX = 0;
         }
     }
+
+    requestAnimationFrame(draw);
 };
 
 document.addEventListener('keydown', keyDownHandler, false);
@@ -166,4 +183,4 @@ for (let c = 0; c < brickColumnCount; c++) {
     }
 }
 
-const interval = setInterval(draw, 10);
+draw();
