@@ -24,6 +24,8 @@ const bricks = [];
 let rightPressed = false;
 let leftPressed = false;
 
+let score = 0;
+
 const keyDownHandler = (e) => {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
         rightPressed = true;
@@ -51,6 +53,12 @@ const collisionDetection = () => {
                 if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
                     dy = -dy;
                     b.status = 0;
+                    score++;
+                    if (score === brickRowCount * brickColumnCount) {
+                        alert('YOU WIN, CONGRATULATION!');
+                        document.location.reload();
+                        clearInterval(interval);
+                    }
                 }
             }
         }
@@ -92,12 +100,19 @@ const drawBricks = () => {
     }
 }
 
+const drawScore = () => {
+    ctx.font = '16px Arial';
+    ctx.style = '#0095DD';
+    ctx.fillText(`Score: ${score}`, 8, 20);
+};
+
 const draw = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    drawBricks();
     drawBall();
     drawPaddle();
-    drawBricks();
+    drawScore();
 
     collisionDetection();
 
